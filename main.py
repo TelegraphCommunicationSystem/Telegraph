@@ -1,3 +1,4 @@
+import auth_manager
 import wifi_manager
 
 wlan = wifi_manager.get_connection()
@@ -6,3 +7,4 @@ if wlan is None:
     while True:
         pass  # you shall not pass :D
 
+print(auth_manager.test())
