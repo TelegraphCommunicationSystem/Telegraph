@@ -1,14 +1,15 @@
+from time import sleep
+from umachine import RTC
 import system_manager
 import struct
 import ntptime
 import urequests
 import ujson
 
-def test():
+def get_jwt():
     data =ujson.dumps({'opt_code': totp(ntptime.time(), system_manager.read_systemdata()['TS']), 'id': system_manager.read_systemdata()['ID']})
     response = urequests.post("https://tcs-auth.bogner.systems/telegraph/login", headers = {'content-type': 'application/json'}, data=data)
-    print(response.text)
-    print("TOTP:", totp(ntptime.time(), system_manager.read_systemdata()['TS']))
+    return response.text
 
 def totp(time, key, step_secs=30, digits=6):
     hmac = hmac_sha1(base32_decode(key), struct.pack(">Q", time // step_secs))
