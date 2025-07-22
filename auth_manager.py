@@ -3,12 +3,13 @@ from umachine import RTC
 import system_manager
 import struct
 import ntptime
-import urequests
+import urequests as requests
 import ujson
+import utime
 
 def get_jwt():
     data =ujson.dumps({'opt_code': totp(ntptime.time(), system_manager.read_systemdata()['TS']), 'id': system_manager.read_systemdata()['ID']})
-    response = urequests.post("https://tcs-auth.bogner.systems/telegraph/login", headers = {'content-type': 'application/json'}, data=data)
+    response = requests.post("https://tcs-auth.bogner.systems/telegraph/login", headers = {'content-type': 'application/json'}, data=data)
     return response.text
 
 def totp(time, key, step_secs=30, digits=6):
