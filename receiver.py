@@ -1,9 +1,12 @@
+import uasyncio as asyncio
+
 import usocket as socket
 from time import sleep
 from machine import Pin
 import ssl
 import ubinascii
 import os
+import uwebsocket
 
 def on_message(message):
     led_onboard = Pin("LED", Pin.OUT)
@@ -53,14 +56,12 @@ class receiver:
         print(switching_protocol_confirm)
         if switching_protocol_confirm is None:
             print("e")
-
-
             return True
         if "101 Switching Protocols" not in switching_protocol_confirm:
             return False
         return None
 
-    def listen(self):
+    async def listen(self):
         while True:
             try:
                 response = self.sock.recv(1024)
@@ -70,10 +71,11 @@ class receiver:
                     text = payload.decode()
                     zahl = int(text)
                     on_message(zahl)
+                else:
+                    await asyncio.sleep(0.1)
             except:
                 print("error")
                 try:
                     self.connect(self.jwt)
                 except:
-                    sleep(10)
-                    print("fldsajflöjfjflsajflkjdsalfjdsalkfjlkdsajflkdsajlkfjweohhi89vfhbnkjdshgfoiutg")
+                    await asyncio.sleep(0.1)
