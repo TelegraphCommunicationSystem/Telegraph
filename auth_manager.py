@@ -10,6 +10,8 @@ import utime
 def get_jwt():
     data =ujson.dumps({'opt_code': totp(ntptime.time(), system_manager.read_systemdata()['TS']), 'id': system_manager.read_systemdata()['ID']})
     response = requests.post("https://tcs-auth.bogner.systems/telegraph/login", headers = {'content-type': 'application/json'}, data=data)
+    if response.status_code != 200:
+        return None
     return response.text
 
 def totp(time, key, step_secs=30, digits=6):

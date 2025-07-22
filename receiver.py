@@ -8,12 +8,12 @@ import ubinascii
 import os
 import uwebsocket
 
-def on_message(message):
+async def on_message(message):
     led_onboard = Pin("LED", Pin.OUT)
     # LED einschalten
     led_onboard.on()
     # 5 Sekunden warten
-    sleep(message / 1000)
+    await asyncio.sleep(message / 1000)
     # LED ausschalten
     led_onboard.off()
 
@@ -70,12 +70,13 @@ class receiver:
                     payload = response[2:]
                     text = payload.decode()
                     zahl = int(text)
-                    on_message(zahl)
+                    await on_message(zahl)
                 else:
                     await asyncio.sleep(0.1)
             except:
                 print("error")
                 try:
+                    print("reconnect")
                     self.connect(self.jwt)
                 except:
                     await asyncio.sleep(0.1)
