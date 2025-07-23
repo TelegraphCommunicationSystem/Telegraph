@@ -27,6 +27,8 @@ class receiver:
 
     def connect(self, jwt):
         self.jwt = jwt
+        self.sock = socket.socket()
+
         # Setup WebSocket
         addr_info = socket.getaddrinfo(self.host, self.port)
         addr = addr_info[0][-1]
@@ -75,5 +77,7 @@ class receiver:
                 print("error")
                 try:
                     print("reconnect")
+                    self.connect(self.jwt)
                 except OSError as e:
-                    await asyncio.sleep(0.1)
+                    print(e)
+                    await asyncio.sleep(1)
