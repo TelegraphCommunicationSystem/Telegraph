@@ -1,12 +1,10 @@
 import uasyncio as asyncio
 
 import usocket as socket
-from time import sleep
 from machine import Pin
 import ssl
 import ubinascii
 import os
-import uwebsocket
 
 async def on_message(message):
     led_onboard = Pin("LED", Pin.OUT)
@@ -77,6 +75,5 @@ class receiver:
                 print("error")
                 try:
                     print("reconnect")
-                    self.connect(self.jwt)
-                except:
+                except OSError as e:
                     await asyncio.sleep(0.1)

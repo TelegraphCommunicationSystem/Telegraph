@@ -2,6 +2,7 @@ import network
 import socket
 import ure
 import time
+import machine
 
 ap_ssid = "WifiManager"
 ap_password = "tayfunulu"
@@ -54,8 +55,9 @@ def get_connection():
         print("exception", str(e))
 
     # start web server for connection manager:
-    #if not connected:
-        #connected = start()
+    if not connected:
+        connected = start()
+        machine.reset()
 
     return wlan_sta if connected else None
 
@@ -295,6 +297,9 @@ def start(port=80):
     while True:
         if wlan_sta.isconnected():
             wlan_ap.active(False)
+            server_socket.close()
+            wlan_sta.disconnect()
+            wlan_ap.disconnect()
             return True
 
         client, addr = server_socket.accept()
@@ -336,3 +341,4 @@ def start(port=80):
 
         finally:
             client.close()
+
