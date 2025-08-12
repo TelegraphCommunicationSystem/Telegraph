@@ -16,6 +16,7 @@ def blink_led():
         sleep(0.1)
 
 async def main():
+    #Status zeichen wenn wifi manager an
     wlan = wifi_manager.get_connection()
     if wlan is None:
         print("Could not initialize the network connection.")
@@ -28,6 +29,7 @@ async def main():
     jwt = create_jwt()
     receiver_obj = connect_receiver(jwt)
 
+    #status pi hochgefahren und aktiv
     await asyncio.gather(
         receiver_obj.listen(),
         check_button_pressed()
