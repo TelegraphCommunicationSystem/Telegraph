@@ -116,13 +116,13 @@ class receiver:
         #            zahl = int(text)
                     try:
                         payload = extract_times(response)
+                        print(payload)
+                        sleep_time = payload["paused"] / 1000
+                        if (sleep_time <= 10000):
+                            await asyncio.sleep(sleep_time)
+                        await on_message(payload["pressed"] / 1000)
                     except Exception as e:
                         print(e)
-                    print(payload)
-                    sleep_time = payload["paused"]/1000
-                    if(sleep_time<=10000):
-                        await asyncio.sleep(sleep_time)
-                    await on_message(payload["pressed"]/1000)
                 else:
                     await asyncio.sleep(0.1)
             except:
