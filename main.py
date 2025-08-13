@@ -49,6 +49,7 @@ def create_jwt():
         machine.reset()
     if jwt is None:
         print("Could not create JWT.")
+        machine.soft_reset()
         blink_led()
         while True:
             pass  # you shall not pass :D

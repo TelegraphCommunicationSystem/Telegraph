@@ -109,29 +109,70 @@ class receiver:
         while True:
             try:
                 response = self.sock.recv(1024)
-                print(response)
-                if response is not None:
-      #              payload = response[2:]
-       #             text = payload.decode()
-        #            zahl = int(text)
-                    try:
-                        payload = extract_times(response)
-                        print(payload)
-                        sleep_time = payload["paused"] / 1000
-                        if (sleep_time <= 10000):
-                            await asyncio.sleep(sleep_time)
-                        await on_message(payload["pressed"] / 1000)
-                    except Exception as e:
-                        print(e)
-                else:
+                print(f"Received data: {response}")  # Besseres Logging
+
+
+
+                # Ignoriere leere Nachrichten
+                if not response and not response == b'':
                     await asyncio.sleep(0.1)
-            except:
-                print("error")
+                    continue
+
+                if response == b'' or len(response) == 0 or response.strip() == b'':
+                    print("beadslfjdsalk")
+                    await self.do_reconnect()
+
                 try:
-                    print("reconnect")
+                    payload = extract_times(response)
+                    print(f"Extracted payload: {payload}")
+
+                    sleep_time = payload["paused"] / 1000
+                    # Zusätzliche Validierung
+                    if sleep_time < 10:
+                        await asyncio.sleep(sleep_time)
+                        print(f"Sleep time too long: {sleep_time}ms")
+
+                    await on_message(payload["pressed"] / 1000)
+
+                except ValueError as e:
+                    print(f"Parsing error: {e}")
+                    await asyncio.sleep(0.1)
+
+            except OSError as e:
+                print(f"Socket error: {e}")
+                try:
+                    print("Attempting reconnect...")
+                    self.sock.close()  # Explizit alte Verbindung schließen
+                    await asyncio.sleep(1)  # Kurz warten vor Reconnect
                     self.connect(self.jwt)
-                except OSError as e:
-                    print(e)
-                    await asyncio.sleep(1)
+                except Exception as reconnect_error:
+                    print(f"Reconnect failed: {reconnect_error}")
+                    await asyncio.sleep(5)  # Längere Wartezeit bei Reconnect-Fehler
 
 
+    async def do_reconnect(self):
+        self.connected = False
+        try:
+            print("Closing old connection...")
+            self.sock.close()
+        except:
+            pass
+
+        retry_count = 0
+        max_retries = 3
+        while not self.connected and retry_count < max_retries:
+            try:
+                retry_count += 1
+                print(f"Reconnect attempt {retry_count}/{max_retries}")
+                self.connect(self.jwt)
+                await asyncio.sleep(3)
+                if self.connected:
+                    print("Reconnect successful!")
+                    return True
+            except Exception as reconnect_error:
+                print(f"Reconnect attempt {retry_count} failed: {reconnect_error}")
+                if retry_count < max_retries:
+                    await asyncio.sleep(retry_count * 2)  # Exponentieller Backoff
+
+        print("All reconnect attempts failed")
+        return False
