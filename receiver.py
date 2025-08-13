@@ -96,6 +96,15 @@ class receiver:
         self.connected = True
         return None
 
+    async def ping_pong(self):
+        try:
+            while True:
+                print("ping - pong")
+                await self.sock.send("ping")  # oder ws.ping()
+                await asyncio.sleep(15)  # alle 20s
+        except Exception as e:
+            print("Verbindung geschlossen:", e)
+
     async def listen(self):
         while True:
             try:
@@ -110,7 +119,9 @@ class receiver:
                     except Exception as e:
                         print(e)
                     print(payload)
-                    asyncio.sleep(payload["paused"]/1000)
+                    sleep_time = payload["paused"]/1000
+                    if(sleep_time<=10000):
+                        await asyncio.sleep(sleep_time)
                     await on_message(payload["pressed"]/1000)
                 else:
                     await asyncio.sleep(0.1)

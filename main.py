@@ -1,5 +1,7 @@
 from time import sleep
 
+import machine
+
 import auth_manager
 import receiver
 import wifi_manager
@@ -16,6 +18,9 @@ def blink_led():
         sleep(0.1)
 
 async def main():
+    led_onboard = Pin("LED", Pin.OUT)
+    led_onboard.off()
+
     #Status zeichen wenn wifi manager an
     wlan = wifi_manager.get_connection()
     if wlan is None:
@@ -32,11 +37,16 @@ async def main():
     #status pi hochgefahren und aktiv
     await asyncio.gather(
         receiver_obj.listen(),
-        check_button_pressed()
+        check_button_pressed(),
+        receiver_obj.ping_pong()
     )
 
 def create_jwt():
-    jwt = auth_manager.get_jwt()
+    try:
+        jwt = auth_manager.get_jwt()
+    except:
+        #Falls eine Exception fliegt, ist es wahrscheinlich ein Timeout, das kommt vor, wenn ein Socket noch offen ist
+        machine.reset()
     if jwt is None:
         print("Could not create JWT.")
         blink_led()
