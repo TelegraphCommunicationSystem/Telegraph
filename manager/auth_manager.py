@@ -1,11 +1,9 @@
-from time import sleep
-from umachine import RTC
 import system_manager
 import struct
 import ntptime
 import urequests as requests
 import ujson
-import utime
+
 
 def get_jwt():
     data =ujson.dumps({'opt_code': totp(ntptime.time(), system_manager.read_systemdata()['TS']), 'id': system_manager.read_systemdata()['ID']})

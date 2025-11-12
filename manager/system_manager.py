@@ -1,6 +1,6 @@
 
 
-SYSTEMDATA = "SYSTEMDATA.DAT"
+SYSTEMDATA = "config/SYSTEMDATA.DAT"
 
 def read_systemdata():
     with open(SYSTEMDATA) as f:

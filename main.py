@@ -2,12 +2,11 @@ from time import sleep
 
 import machine
 
-import auth_manager
 import receiver
-import wifi_manager
+from manager import wifi_manager, auth_manager
 import uasyncio as asyncio
 from machine import Pin
-import time
+
 
 def blink_led():
     led_onboard = Pin("LED", Pin.OUT)

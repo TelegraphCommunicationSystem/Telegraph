@@ -96,14 +96,32 @@ class receiver:
         self.connected = True
         return None
 
+    def create_ping_frame(self):
+        # WebSocket ping frame: FIN=1, Opcode=9 (ping), Länge=0
+        return b'\x89\x00'
+
     async def ping_pong(self):
         try:
             while True:
-                print("ping - pong")
-                await self.sock.send("ping")  # oder ws.ping()
-                await asyncio.sleep(15)  # alle 20s
+                self.sock.send(self.create_ping_frame())
+                await asyncio.sleep(10)  # Alle 10 Sekunden
         except Exception as e:
-            print("Verbindung geschlossen:", e)
+            print(f"Ping-Pong-Fehler: {e}")
+            self.connected = False
+
+    def decode_websocket_frame(self, data):
+        if not data:
+            return None
+
+        # Einfache WebSocket-Frame-Dekodierung
+        opcode = data[0] & 0x0f
+        if opcode == 0x0a:  # Pong
+            return None
+        elif opcode == 0x01:  # Text Frame
+            payload_len = data[1] & 0x7f
+            payload_start = 2
+            return data[payload_start:payload_start + payload_len]
+        return data
 
     async def listen(self):
         while True:
@@ -115,6 +133,11 @@ class receiver:
 
                 # Ignoriere leere Nachrichten
                 if not response and not response == b'':
+                    await asyncio.sleep(0.1)
+                    continue
+
+                if response == b'\x8a\x00':
+                    print(f"Ignoriere leere Nachrichten: {response}")
                     await asyncio.sleep(0.1)
                     continue
 

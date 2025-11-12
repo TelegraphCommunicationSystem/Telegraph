@@ -8,7 +8,7 @@ ap_ssid = "WifiManager"
 ap_password = "tayfunulu"
 ap_authmode = 3  # WPA2
 
-NETWORK_PROFILES = 'wifi.dat'
+NETWORK_PROFILES = 'config/wifi.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_sta = network.WLAN(network.STA_IF)
