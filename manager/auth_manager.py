@@ -1,4 +1,4 @@
-import system_manager
+from manager import system_manager
 import struct
 import ntptime
 import urequests as requests

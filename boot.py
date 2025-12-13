@@ -2,7 +2,7 @@ import urequests, machine, time
 from manager import wifi_manager
 
 SERVER_BASE = "https://github.com/TelegraphCommunicationSystem/Telegraph/archive/refs/tags/0.0.1.zip"  # URL deines Servers
-VERSION_URL = "https://git.bogner.systems/andre/test/raw/branch/main/version.txt"
+VERSION_URL = "https://raw.githubusercontent.com/TelegraphCommunicationSystem/Telegraph/refs/heads/main/config/version.txt"
 LOCAL_VERSION_FILE = "config/version.txt"
 
 def connect_wifi():
