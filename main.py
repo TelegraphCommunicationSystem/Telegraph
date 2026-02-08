@@ -6,7 +6,7 @@ import receiver
 from manager import wifi_manager, auth_manager
 import uasyncio as asyncio
 from machine import Pin
-
+from manager.update_manager import update_firmware
 
 def blink_led():
     led_onboard = Pin("LED", Pin.OUT)
@@ -29,6 +29,7 @@ async def main():
             pass  # you shall not pass :D
     print(wlan)
 
+    update_firmware()
 
     jwt = create_jwt()
     receiver_obj = connect_receiver(jwt)
