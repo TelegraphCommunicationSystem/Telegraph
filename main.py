@@ -8,6 +8,7 @@ import uasyncio as asyncio
 from machine import Pin
 from manager.update_manager import update_firmware
 import urequests
+import re
 
 
 def blink_led():
@@ -68,7 +69,9 @@ def connect_receiver(jwt):
 def make_call(pressed, paused):
     print(f"Button pressed for {pressed}s, paused for {paused}s")
     try:
-        url = "https://tcs-communication.bogner.systems/messages/send"
+        with open('links.txt') as f: 
+            links = f.read()
+            url = (re.search("send:\s*(.*)", links)).group(1)
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {JWT}"

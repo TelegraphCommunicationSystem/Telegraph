@@ -1,0 +1,2 @@
+send: https://tcs-communication.bogner.systems/messages/send
+host: tcs-communication.bogner.systems
