@@ -9,6 +9,7 @@ from machine import Pin
 from manager.update_manager import update_firmware
 import urequests
 import re
+from sinus_generator import start_generator
 
 
 def blink_led():
@@ -37,6 +38,8 @@ async def main():
     global JWT
     JWT = create_jwt()
     receiver_obj = connect_receiver(JWT)
+
+    start_generator()
 
     #status pi hochgefahren und aktiv
     await asyncio.gather(
