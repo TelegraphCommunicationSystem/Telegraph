@@ -2,12 +2,12 @@ from machine import Pin, I2S
 import math
 import _thread
 
-# Configure I2S (ID=0) on GP16 (BCLK), GP17 (WS), GP18 (DATA)
+# Configure I2S (ID=0) on GP13 (BCLK), GP11 (WS), GP12 (DATA)
 i2s = I2S(
     0,
-    sck=Pin(16),
-    ws=Pin(17),
-    sd=Pin(18),
+    sck=Pin(11), # BCLK
+    ws=Pin(12), # WS
+    sd=Pin(13), # DATA
     mode=I2S.TX,
     bits=16,
     format=I2S.MONO,
@@ -23,7 +23,7 @@ samples = int(fs // freq)  # ~63 samples per cycle
 # Build one sine cycle
 cycle = bytearray(samples * 2)
 for i in range(samples):
-    val = int(0.25 * 32767 * math.sin(2 * math.pi * i / samples))
+    val = int(0.025 * 32767 * math.sin(2 * math.pi * i / samples))
     cycle[2 * i] = val & 0xFF
     cycle[2 * i + 1] = (val >> 8) & 0xFF
 
